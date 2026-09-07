@@ -30,7 +30,7 @@ def test_baidu_search():
 
         # 等待搜索结果加载
         # 原因：给页面足够时间加载搜索结果
-        time.sleep(10)
+        time.sleep(11)
 
     except Exception as e:
         # 捕获并打印异常信息
