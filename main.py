@@ -21,3 +21,6 @@ def test_baidu_search():
 
     # 关闭浏览器
     driver.quit()
+
+    # 等待页面加载
+    time.sleep(2)
