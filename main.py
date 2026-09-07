@@ -20,6 +20,8 @@ def test_baidu_search():
     time.sleep(2)
     # 等待页面加载
     time.sleep(2)
+    # 等待页面加载
+    time.sleep(2)
 
     # 关闭浏览器
     driver.quit()
