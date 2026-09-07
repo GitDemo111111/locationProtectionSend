@@ -17,7 +17,7 @@ def test_baidu_search():
         # 原因：ElementNotInteractableException通常是因为元素尚未完全加载或被其他元素遮挡
         # WebDriverWait会等待最多10秒，直到元素可见并可点击
         search_box = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'kw'))
+            EC.element_to_be_clickable((By.ID, 'chat-textarea'))
         )
         search_box.send_keys('selenium')
 
