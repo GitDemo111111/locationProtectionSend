@@ -1,19 +1,27 @@
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
-def test_baidu_search():
+def test_web_form():
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')  # 关键：无头模式
+    options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
 
     driver = webdriver.Chrome(options=options)
-    driver.get('http://www.baidu.com')
-    driver.find_element(By.ID, 'kw').send_keys('selenium')
-    driver.find_element(By.ID, 'su').click()
-    time.sleep(2)
+    driver.get('https://www.selenium.dev/selenium/web/web-form.html')
 
-    assert 'selenium' in driver.title  # 有效断言
+    wait = WebDriverWait(driver, 10)
+    text_box = wait.until(EC.presence_of_element_located((By.NAME, 'my-text')))
+    text_box.send_keys('Selenium WebDriver')
+
+    submit_button = driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
+    submit_button.click()
+
+    # 断言提交成功
+    wait.until(EC.title_contains('Submitted'))
+    assert 'Submitted' in driver.title
+
     driver.quit()
