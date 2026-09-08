@@ -50,7 +50,7 @@ def test_web_form():
         # 等待并定位文本输入框
         # 原因：确保输入框已加载且可交互
         text_box = wait.until(
-            EC.element_to_be_clickable((By.NAME, 'my-text'))
+            EC.element_to_be_clickable((By.NAME, 'my-textarea'))
         )
         text_box.send_keys('Hello CI')
 

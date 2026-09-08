@@ -10,23 +10,44 @@ def test_baidu_search():
     driver = webdriver.Edge()
 
     try:
-        # 打开百度首页
-        driver.get('http://www.baidu.com')
+        # # 打开百度首页
+        # driver.get('http://www.baidu.com')
+        #
+        # # 使用显式等待确保搜索框加载完成并可交互
+        # # 原因：ElementNotInteractableException通常是因为元素尚未完全加载或被其他元素遮挡
+        # # WebDriverWait会等待最多10秒，直到元素可见并可点击
+        # search_box = WebDriverWait(driver, 10).until(
+        #     EC.element_to_be_clickable((By.ID, 'chat-textarea'))
+        # )
+        # search_box.send_keys('selenium')
+        #
+        # # 同样使用显式等待确保搜索按钮可点击
+        # # 原因：避免在按钮未完全加载时尝试点击
+        # search_button = WebDriverWait(driver, 10).until(
+        #     EC.element_to_be_clickable((By.ID, 'su'))
+        # )
+        # 访问测试页面
+        driver.get('https://www.selenium.dev/selenium/web/web-form.html')
 
-        # 使用显式等待确保搜索框加载完成并可交互
-        # 原因：ElementNotInteractableException通常是因为元素尚未完全加载或被其他元素遮挡
-        # WebDriverWait会等待最多10秒，直到元素可见并可点击
-        search_box = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'chat-textarea'))
-        )
-        search_box.send_keys('selenium')
+        # 创建显式等待对象
+        # 原因：使用显式等待比固定等待更可靠
+        wait = WebDriverWait(driver, 15)
 
-        # 同样使用显式等待确保搜索按钮可点击
-        # 原因：避免在按钮未完全加载时尝试点击
-        search_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'su'))
+        # 等待并定位文本输入框
+        # 原因：确保输入框已加载且可交互
+        text_box = wait.until(
+            EC.element_to_be_clickable((By.NAME, 'my-textarea'))
         )
-        search_button.click()
+        text_box.send_keys('Hello CI')
+
+        # 等待并定位提交按钮
+        # 原因：确保按钮已加载且可点击
+        submit_button = wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[type="submit"]'))
+        )
+        time.sleep(10)
+        submit_button.click()
+
 
         # 等待搜索结果加载
         # 原因：给页面足够时间加载搜索结果
