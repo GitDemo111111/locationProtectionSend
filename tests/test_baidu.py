@@ -82,19 +82,23 @@ def test_web_form():
             print(f"页面源代码: {driver.page_source}")
             raise
 
-        # 等待页面标题更新
+        # 等待页面跳转
         # 原因：确认页面已跳转到提交成功页面
         print("等待页面跳转...")
         try:
-            wait.until(EC.title_contains('Submitted'))
-            print(f"页面跳转成功，当前标题: {driver.title}")
-            assert 'Submitted' in driver.title
+            # 修改等待条件为检查URL是否包含'submitted-form.html'
+            # 原因：实际页面标题是"Web form - target page"，不包含"Submitted"，导致原等待条件失败
+            wait.until(EC.url_contains('submitted-form.html'))
+            print(f"页面跳转成功，当前URL: {driver.current_url}")
+            # 验证URL是否正确
+            assert 'submitted-form.html' in driver.current_url
             print("测试断言通过")
         except Exception as e:
             print(f"页面跳转或断言失败: {str(e)}")
             print(f"当前页面URL: {driver.current_url}")
             print(f"当前页面标题: {driver.title}")
             raise
+
 
     except Exception as e:
         # 捕获并打印异常信息
