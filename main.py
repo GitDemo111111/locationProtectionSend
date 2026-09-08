@@ -6,7 +6,7 @@ import sys
 import time
 
 
-def test_web_form(text):
+def web_form(text):
     try:
         # 配置Edge浏览器选项
         options = webdriver.EdgeOptions()
