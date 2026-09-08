@@ -12,6 +12,9 @@ def test_web_form(inputText):
         # 原因：使用Edge替代Chrome，需要使用EdgeOptions
         options = webdriver.EdgeOptions()
 
+        # ===== 关键：CI环境必须加无头模式 =====
+        options.add_argument('--headless=new')  # 这行必须有！
+
         # 添加禁用沙箱参数
         # 原因：CI环境中可能需要绕过OS安全模型
         options.add_argument('--no-sandbox')
