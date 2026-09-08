@@ -1,4 +1,5 @@
-from main import test_web_form
+from ..main import test_web_form
+
 
 def test_baidu_search():
     # 调用main.py中的test_web_form方法

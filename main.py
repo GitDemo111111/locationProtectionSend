@@ -123,4 +123,4 @@ def test_web_form(inputText):
 
 
 if __name__ == '__main__':
-    test_web_form()
+    test_web_form('Hello main')
