@@ -41,7 +41,10 @@ def test_web_form():
         driver.set_page_load_timeout(30)
 
         # 访问测试页面
+        print("正在访问测试页面...")
         driver.get('https://www.selenium.dev/selenium/web/web-form.html')
+        print(f"当前页面URL: {driver.current_url}")
+        print(f"当前页面标题: {driver.title}")
 
         # 创建显式等待对象
         # 原因：使用显式等待比固定等待更可靠
@@ -49,22 +52,47 @@ def test_web_form():
 
         # 等待并定位文本输入框
         # 原因：确保输入框已加载且可交互
-        text_box = wait.until(
-            EC.element_to_be_clickable((By.NAME, 'my-textarea'))
-        )
-        text_box.send_keys('Hello CI')
+        print("等待文本输入框出现...")
+        try:
+            text_box = wait.until(
+                EC.element_to_be_clickable((By.NAME, 'my-text'))
+            )
+            print("文本输入框已找到，正在输入文本...")
+            text_box.send_keys('Hello CI')
+            print("文本输入成功")
+        except Exception as e:
+            print(f"查找文本输入框失败: {str(e)}")
+            print(f"页面源代码: {driver.page_source}")
+            raise
 
         # 等待并定位提交按钮
         # 原因：确保按钮已加载且可点击
-        submit_button = wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[type="submit"]'))
-        )
-        submit_button.click()
+        print("等待提交按钮出现...")
+        try:
+            submit_button = wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[type="submit"]'))
+            )
+            print("提交按钮已找到，正在点击...")
+            submit_button.click()
+            print("提交按钮点击成功")
+        except Exception as e:
+            print(f"查找提交按钮失败: {str(e)}")
+            print(f"页面源代码: {driver.page_source}")
+            raise
 
         # 等待页面标题更新
         # 原因：确认页面已跳转到提交成功页面
-        wait.until(EC.title_contains('Submitted'))
-        assert 'Submitted' in driver.title
+        print("等待页面跳转...")
+        try:
+            wait.until(EC.title_contains('Submitted'))
+            print(f"页面跳转成功，当前标题: {driver.title}")
+            assert 'Submitted' in driver.title
+            print("测试断言通过")
+        except Exception as e:
+            print(f"页面跳转或断言失败: {str(e)}")
+            print(f"当前页面URL: {driver.current_url}")
+            print(f"当前页面标题: {driver.title}")
+            raise
 
     except Exception as e:
         # 捕获并打印异常信息
@@ -75,10 +103,20 @@ def test_web_form():
         # 原因：便于后续分析失败原因
         if 'driver' in locals():
             timestamp = int(time.time())
-            driver.save_screenshot(f'error_{timestamp}.png')
+            screenshot_path = f'error_{timestamp}.png'
+            driver.save_screenshot(screenshot_path)
+            print(f"错误截图已保存到: {screenshot_path}")
+
+            # 打印当前页面信息
+            print(f"错误发生时页面URL: {driver.current_url}")
+            print(f"错误发生时页面标题: {driver.title}")
+
+            # 打印页面源代码前500个字符，便于查看页面结构
+            print(f"页面源代码前500字符: {driver.page_source[:500]}")
         raise
     finally:
         # 确保浏览器会被关闭
         # 原因：即使测试失败也要清理资源，避免CI环境残留进程
         if 'driver' in locals():
             driver.quit()
+            print("浏览器已关闭")
