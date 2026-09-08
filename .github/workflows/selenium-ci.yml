@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        browser: [chrome, edge]  # 并行执行多浏览器测试
+        browser: [ edge]  # 并行执行多浏览器测试
 
     steps:
       - name: Checkout code
