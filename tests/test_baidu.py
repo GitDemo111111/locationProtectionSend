@@ -53,6 +53,7 @@ def test_web_form():
         # 等待并定位文本输入框
         # 原因：确保输入框已加载且可交互
         print("等待文本输入框出现...")
+        print(    )
         try:
             text_box = wait.until(
                 EC.element_to_be_clickable((By.NAME, 'my-text'))
