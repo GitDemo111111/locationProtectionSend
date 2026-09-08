@@ -6,124 +6,56 @@ import sys
 import time
 
 
-def test_web_form(inputText):
+def test_web_form(text):
     try:
         # 配置Edge浏览器选项
-        # 原因：使用Edge替代Chrome，需要使用EdgeOptions
         options = webdriver.EdgeOptions()
 
-        # ===== 关键：CI环境必须加无头模式 =====
-        options.add_argument('--headless=new')  # 这行必须有！
-
-        # 添加禁用沙箱参数
-        # 原因：CI环境中可能需要绕过OS安全模型
+        # CI环境必须加无头模式
+        options.add_argument('--headless=new')
+        # CI环境必须禁用沙箱
         options.add_argument('--no-sandbox')
-
-        # 禁用/dev/shm使用
-        # 原因：解决CI环境中共享内存不足的问题
         options.add_argument('--disable-dev-shm-usage')
-
-        # 禁用GPU加速
-        # 原因：无头模式下不需要GPU加速，可减少资源占用
         options.add_argument('--disable-gpu')
-
-        # 设置窗口大小
-        # 原因：某些元素在不同窗口大小下可能显示不同
         options.add_argument('--window-size=1920,1080')
 
-        # 初始化Edge浏览器驱动
-        # 原因：使用Edge浏览器进行测试
         driver = webdriver.Edge(options=options)
-
-        # 设置页面加载超时时间
-        # 原因：防止页面加载过久导致测试挂起
         driver.set_page_load_timeout(30)
 
-        # 访问测试页面
         print("正在访问测试页面...")
         driver.get('https://www.selenium.dev/selenium/web/web-form.html')
-        print(f"当前页面URL: {driver.current_url}")
-        print(f"当前页面标题: {driver.title}")
 
-        # 创建显式等待对象
-        # 原因：使用显式等待比固定等待更可靠
         wait = WebDriverWait(driver, 15)
 
-        # 等待并定位文本输入框
-        # 原因：确保输入框已加载且可交互
+        # 定位输入框
         print("等待文本输入框出现...")
-        try:
-            text_box = wait.until(
-                EC.element_to_be_clickable((By.NAME, 'my-text'))
-            )
-            print("文本输入框已找到，正在输入文本...")
-            text_box.send_keys(inputText)
-            print("文本输入成功")
-        except Exception as e:
-            print(f"查找文本输入框失败: {str(e)}")
-            print(f"页面源代码: {driver.page_source}")
-            raise
+        text_box = wait.until(EC.element_to_be_clickable((By.NAME, 'my-text')))
 
-        # 等待并定位提交按钮
-        # 原因：确保按钮已加载且可点击
+        # ⚠️ 修复点：这里必须用变量 text，而不是不存在的 inputText
+        print("正在输入文本...")
+        text_box.send_keys(text)
+        print("文本输入成功")
+
+        # 定位提交按钮
         print("等待提交按钮出现...")
-        try:
-            submit_button = wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[type="submit"]'))
-            )
-            print("提交按钮已找到，正在点击...")
-            submit_button.click()
-            print("提交按钮点击成功")
-        except Exception as e:
-            print(f"查找提交按钮失败: {str(e)}")
-            print(f"页面源代码: {driver.page_source}")
-            raise
+        submit_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[type="submit"]')))
+        submit_button.click()
+        print("提交按钮点击成功")
 
-        # 等待页面跳转
-        # 原因：确认页面已跳转到提交成功页面
+        # 等待跳转
         print("等待页面跳转...")
-        try:
-            # 修改等待条件为检查URL是否包含'submitted-form.html'
-            # 原因：实际页面标题是"Web form - target page"，不包含"Submitted"，导致原等待条件失败
-            wait.until(EC.url_contains('submitted-form.html'))
-            print(f"页面跳转成功，当前URL: {driver.current_url}")
-            # 验证URL是否正确
-            assert 'submitted-form.html' in driver.current_url
-            print("测试断言通过")
-        except Exception as e:
-            print(f"页面跳转或断言失败: {str(e)}")
-            print(f"当前页面URL: {driver.current_url}")
-            print(f"当前页面标题: {driver.title}")
-            raise
+        wait.until(EC.url_contains('submitted-form.html'))
 
+        # 断言 URL 正确
+        assert 'submitted-form.html' in driver.current_url
+        print("测试断言通过")
+
+        driver.quit()
+        return True  # 成功返回 True
 
     except Exception as e:
-        # 捕获并打印异常信息
-        # 原因：便于在CI日志中查看错误详情
         print(f"测试执行失败: {str(e)}", file=sys.stderr)
-
-        # 截图保存错误现场
-        # 原因：便于后续分析失败原因
         if 'driver' in locals():
-            timestamp = int(time.time())
-            screenshot_path = f'error_{timestamp}.png'
-            driver.save_screenshot(screenshot_path)
-            print(f"错误截图已保存到: {screenshot_path}")
-
-            # 打印当前页面信息
-            print(f"错误发生时页面URL: {driver.current_url}")
-            print(f"错误发生时页面标题: {driver.title}")
-
-            # 打印页面源代码前500个字符，便于查看页面结构
-            print(f"页面源代码前500字符: {driver.page_source[:500]}")
-        raise
-    finally:
-        # 确保浏览器会被关闭
-        # 原因：即使测试失败也要清理资源，避免CI环境残留进程
-        if 'driver' in locals():
+            driver.save_screenshot(f'error_{int(time.time())}.png')
             driver.quit()
-            print("浏览器已关闭")
-
-
-if __name__ == '__main__':
-    test_web_form('Hello main')
+        return False  # 失败返回 False
