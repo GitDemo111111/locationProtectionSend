@@ -59,3 +59,7 @@ def test_web_form(text):
             driver.save_screenshot(f'error_{int(time.time())}.png')
             driver.quit()
         return False  # 失败返回 False
+
+    # if __name__ == '__main__':
+    #     # 这里只用于本地手动测试，CI 不会执行这里
+    #     test_web_form('Hello Local Debug')
