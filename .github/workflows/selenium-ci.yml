@@ -66,20 +66,19 @@ jobs:
       # 步骤6：运行测试
       # 原因：执行测试脚本
       - name: Run tests
-        run: pytest tests/ -v --maxfail=5 --html=reports/report.html --self-contained-html
-        # CI 环境建议使用 headless 模式
+        run: |
+          pytest tests/ -v --maxfail=5 --html=reports/report.html --self-contained-html
+          echo "===== 检查报告文件是否生成 ====="
+          ls -la reports/   # 这一行会在 CI 日志里列出 reports 文件夹下的所有文件
+          echo "===== 检查结束 ====="
 
-      # 步骤7：上传测试结果
-      # 原因：保存测试结果和截图，便于分析失败原因
       - name: Upload test artifacts
-        # 无论测试成功或失败都执行此步骤
-        if: always()
+        if: always()   # 无论测试成功或失败都上传
         uses: actions/upload-artifact@v4
         with:
-          # 上传文件的名称，包含浏览器类型
           name: test-results-${{ matrix.browser }}
-          # 指定要上传的文件和目录
+          # 重点：用空格隔开多个路径，写成一行字符串
           path: |
-            reports/      # 测试报告目录
-            screenshots/  # 截图目录
-            *.log         # 所有日志文件
+            reports/
+            screenshots/
+            *.log
