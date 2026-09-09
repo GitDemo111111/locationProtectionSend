@@ -48,13 +48,8 @@ jobs:
       # 原因：安装测试所需的Python包
       - name: Install dependencies
         run: |
-          # 升级pip到最新版本
           python -m pip install --upgrade pip
-          # 安装selenium、pytest和pytest-xdist包
-          # selenium: 用于浏览器自动化
-          # pytest: Python测试框架
-          # pytest-xdist: 用于并行测试执行
-          pip install selenium pytest pytest-xdist
+          pip install selenium pytest pytest-xdist pytest-html   # 👈 加在这里
 
       # 步骤4：设置Chrome浏览器
       # 原因：为Chrome浏览器测试做准备
