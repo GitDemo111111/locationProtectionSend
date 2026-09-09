@@ -82,3 +82,38 @@ jobs:
             reports/
             screenshots/
             *.log
+#  # ==================== 新增 CD（持续部署）任务 ====================
+#  deploy:
+#    name: 部署到服务器
+#    needs: test            # 只有 test 任务全部通过（绿勾）才会执行部署
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/master'   # 仅在 master 分支推送时触发
+#
+#    steps:
+#      # 1. 拉取最新代码（需要重新 checkout，因为这是独立任务）
+#      - name: 拉取代码
+#        uses: actions/checkout@v4
+#
+#      # 2. 将代码通过 SCP（安全拷贝）传输到你的服务器
+#      - name: 上传代码到服务器
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: ${{ secrets.SERVER_HOST }}        # 服务器 IP
+#          username: ${{ secrets.SERVER_USER }}    # 用户名（一般是 root）
+#          password: ${{ secrets.SERVER_PASSWORD }} # 密码（或使用 key）
+#          source: "."                             # 把当前整个项目文件夹传过去
+#          target: "/home/你的用户名/app/locationProtectionSend"  # 服务器上的存放路径
+#
+#      # 3. （可选）SSH 到服务器，执行更新命令
+#      - name: 远程执行更新命令
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ secrets.SERVER_HOST }}
+#          username: ${{ secrets.SERVER_USER }}
+#          password: ${{ secrets.SERVER_PASSWORD }}
+#          script: |
+#            cd /home/你的用户名/app/locationProtectionSend
+#            # 如果服务器上需要装 Python 依赖
+#            pip3 install -r requirements.txt
+#            # 如果你想让脚本在后台持续跑，可以在这里写启动命令，比如：
+#            # nohup python3 main.py > output.log 2>&1 &
