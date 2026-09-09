@@ -25,7 +25,7 @@ def web_form(text):
     try:
         # 创建Edge浏览器选项对象
         # 原因：通过选项对象可以配置浏览器的各种启动参数和行为
-        options = webdriver.EdgeOptions()
+        options = webdriver.ChromeOptions()
 
         # 添加无头模式参数
         # 原因：CI环境通常没有图形界面，需要无头模式运行
@@ -57,7 +57,7 @@ def web_form(text):
 
         # 初始化Edge浏览器驱动
         # 原因：创建浏览器实例，用于后续的自动化操作
-        driver = webdriver.Edge(options=options)
+        driver = webdriver.Chrome(options=options)
 
         # 设置页面加载超时时间为20秒
         # 原因：从默认的30秒降到20秒，避免因页面加载问题导致测试长时间挂起
@@ -194,7 +194,7 @@ def web_form(text):
         # 原因：便于调用者判断测试是否成功
         return False
 
-#
+
 # if __name__ == '__main__':
 #     # 本地手动测试用
 #     # 原因：直接运行此脚本时执行测试，便于本地调试

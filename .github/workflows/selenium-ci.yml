@@ -27,7 +27,7 @@ jobs:
       matrix:
         # 指定要在多个浏览器中运行测试
         # 原因：确保应用在不同浏览器中都能正常工作
-        browser: [ edge]  # 并行执行多浏览器测试
+        browser: [Chrome]  # 并行执行多浏览器测试
 
     # 定义任务中的步骤
     steps:
@@ -58,12 +58,7 @@ jobs:
         # 仅当矩阵浏览器为chrome时执行此步骤
         if: matrix.browser == 'chrome'
 
-      # 步骤5：设置Edge浏览器
-      # 原因：为Edge浏览器测试做准备
-      - name: Setup Edge
-        uses: browser-actions/setup-edge@v1
-        # 仅当矩阵浏览器为edge时执行此步骤
-        if: matrix.browser == 'edge'
+
 
       - name: Create reports directory
         run: mkdir -p reports
